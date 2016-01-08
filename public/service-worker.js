@@ -95,7 +95,7 @@ self.addEventListener('push', function(event) {
                 existingNotification.close();
               }
               message = 'You have ' + notificationCount +
-                ' weather updates.';
+                ' notifications';
               notificationData.notificationCount = notificationCount;
             }
 
