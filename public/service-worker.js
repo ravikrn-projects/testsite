@@ -108,8 +108,8 @@ self.addEventListener('push', function(event) {
         var title = 'An error occured';
         var message = 'We were unable to get the information for this ' +
           'push message';
-
-        return showNotification(title, message);
+        return;
+        // return showNotification(title, message);
       })
   );
 });
