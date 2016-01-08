@@ -73,7 +73,9 @@ self.addEventListener('push', function(event) {
         };
 
         if (!self.registration.getNotifications) {
+          if (user_id){
           return showNotification(title, message, icon, notificationData);
+          }
         }
 
         // Check if a notification is already displayed
@@ -98,8 +100,9 @@ self.addEventListener('push', function(event) {
                 ' notifications';
               notificationData.notificationCount = notificationCount;
             }
-
+            if (user_id){
             return showNotification(title, message, icon, notificationData);
+              }
           });
       })
       .catch(function(err) {
