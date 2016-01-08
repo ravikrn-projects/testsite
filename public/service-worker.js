@@ -2,7 +2,7 @@
 var user_id;
 var MESSAGE_API;
 var notification_id;
-var base_url = 'http://52.76.211.50/notification';
+var base_url = 'https://api.flashnotifier.com/notification';
 
 function showNotification(title, body, icon, data) {
   console.log('showNotification');
@@ -56,7 +56,7 @@ self.addEventListener('push', function(event) {
 
         var title = data.title;
         var message = data.message;
-        var icon = '/images/image.png';
+        var icon = data.image;
         var notification_id = data.notification_id;
 
         // Add this to the data of the notification
