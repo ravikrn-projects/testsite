@@ -3,6 +3,9 @@ var MESSAGE_API;
 var notification_id;
 var base_url = 'https://api.flashnotifier.com/notification';
 
+
+
+
 function showNotification(title, body, icon, data) {
   console.log('showNotification');
   var notificationOptions = {
@@ -18,17 +21,51 @@ function showNotification(title, body, icon, data) {
 
 self.addEventListener('push', function(event) {
   var user_id;
-  var outer_event = event;
+  var MESSAGE_API;
+
+  function get_data(text, callback){
+  var MESSAGE_API;
   console.log('Received a push message', event);
    var request = indexedDB.open("user_data", 2);
   console.log('checkdata triggered');
   request.onerror = function(event){
     alert("Database error:"+ event.target.errorCode);
   };
+  callback(request);
+  }
+
+  //request.onsuccess = function(event){
+  //    console.log('checkdata onsuccess triggered');
+  //    var db = event.target.result;
+  //    var req_data = db.transaction(['users']).objectStore('users').get('1');
+  //    req_data.onsuccess = function(event){
+  //        console.log('test');
+  //        console.log(req_data.result['user_id']);
+  //        user_id = req_data.result['user_id'];
+ //         console.log('response', user_id);
+ //         MESSAGE_API = base_url+'/get_notification_data?user_id='+user_id;
+ //         console.log(MESSAGE_API);
+ //     req_data.onerror =  function(event){
+ //       console.log('some error: '+ event.target.error);
+ //     }
+ //     req_data.onblocked = function(event){
+ //       console.log("its blocked");
+ //     }
+ // };
+//};
+
+function get_table(request, callback){
+  var req_data;
   request.onsuccess = function(event){
       console.log('checkdata onsuccess triggered');
       var db = event.target.result;
-      var req_data = db.transaction(['users']).objectStore('users').get('1');
+      req_data = db.transaction(['users']).objectStore('users').get('1');
+      callback(req_data);
+}
+}
+
+function get_user_id(req_data, callback){
+      var MESSAGE_API;
       req_data.onsuccess = function(event){
           console.log('test');
           console.log(req_data.result['user_id']);
@@ -36,7 +73,22 @@ self.addEventListener('push', function(event) {
           console.log('response', user_id);
           MESSAGE_API = base_url+'/get_notification_data?user_id='+user_id;
           console.log(MESSAGE_API);
-     outer_event.waitUntil(
+          callback(MESSAGE_API);
+      req_data.onerror =  function(event){
+        console.log('some error: '+ event.target.error);
+      }
+      req_data.onblocked = function(event){
+      console.log("its blocked");
+      }
+}
+}
+
+ get_data('text',function(request){
+    get_table(request, function(req_data){
+        get_user_id(req_data, function(MESSAGE_API){
+    
+    console.log(MESSAGE_API);
+    event.waitUntil(
     fetch(MESSAGE_API)
       .then(function(response) {
         if (response.status !== 200) {
@@ -99,19 +151,13 @@ self.addEventListener('push', function(event) {
       .catch(function(err) {
         console.error('A Problem occured with handling the push msg', err);
         return;
-      })
-  );
-
-      }.bind(outer_event);
-      req_data.onerror =  function(event){
-        console.log('some error: '+ event.target.error);
-      }
-      req_data.onblocked = function(event){
-        console.log("its blocked");
-      }
-  }.bind(outer_event);
-  
+      }) 
+); 
+})
+})
+})
 });
+
 
 self.addEventListener('notificationclick', function(event) {
   console.log('Tracking: notificationclick');
