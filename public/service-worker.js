@@ -1,4 +1,3 @@
-'use strict';
 var user_id;
 var MESSAGE_API;
 var notification_id;
@@ -16,14 +15,28 @@ function showNotification(title, body, icon, data) {
   });
 }
 
-self.addEventListener('message', function(event) {
-  console.log('Got it hooo', event.data);
-  user_id = event.data['user_id'];
-  MESSAGE_API =  base_url+'/get_notification_data?user_id='+user_id;
-});
+
 self.addEventListener('push', function(event) {
+  var user_id;
+  var outer_event = event;
   console.log('Received a push message', event);
-  event.waitUntil(
+   var request = indexedDB.open("user_data", 2);
+  console.log('checkdata triggered');
+  request.onerror = function(event){
+    alert("Database error:"+ event.target.errorCode);
+  };
+  request.onsuccess = function(event){
+      console.log('checkdata onsuccess triggered');
+      var db = event.target.result;
+      var req_data = db.transaction(['users']).objectStore('users').get('1');
+      req_data.onsuccess = function(event){
+          console.log('test');
+          console.log(req_data.result['user_id']);
+          user_id = req_data.result['user_id'];
+          console.log('response', user_id);
+          MESSAGE_API = base_url+'/get_notification_data?user_id='+user_id;
+          console.log(MESSAGE_API);
+     outer_event.waitUntil(
     fetch(MESSAGE_API)
       .then(function(response) {
         if (response.status !== 200) {
@@ -88,6 +101,16 @@ self.addEventListener('push', function(event) {
         return;
       })
   );
+
+      }.bind(outer_event);
+      req_data.onerror =  function(event){
+        console.log('some error: '+ event.target.error);
+      }
+      req_data.onblocked = function(event){
+        console.log("its blocked");
+      }
+  }.bind(outer_event);
+  
 });
 
 self.addEventListener('notificationclick', function(event) {
