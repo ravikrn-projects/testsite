@@ -37,7 +37,7 @@ self.addEventListener('push', function(event) {
         var db = event.target.result;
         resolve(db);
       };
-    })then(function(db){
+    }).then(function(db){
       new Promise(function(resolve_t, reject_t){
         var req_data = db.transaction(['users']).objectStore('users').get('1');
         req_data.onsuccess = function(event){
@@ -54,9 +54,9 @@ self.addEventListener('push', function(event) {
         req_data.onblocked = function(event){
          console.log("its blocked");
         }
-      });
+      };
     });
-  };
+  });
 }
 
 
@@ -129,11 +129,9 @@ event.waitUntil(
         return;
       }) 
     });
-); 
+);
 })
-})
-})
-});
+
 
 
 self.addEventListener('notificationclick', function(event) {
