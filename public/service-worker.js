@@ -125,8 +125,8 @@ event.waitUntil(
         console.error('A Problem occured with handling the push msg', err);
         return;
       }) 
-    });
-);
+    })
+)
 })
 
 self.addEventListener('notificationclick', function(event) {
