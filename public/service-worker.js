@@ -59,9 +59,6 @@ self.addEventListener('push', function(event) {
   });
 }
 
-
-
-
 event.waitUntil(
   get_data().then(function(MESSAGE_API){
     console.log(MESSAGE_API);
@@ -131,8 +128,6 @@ event.waitUntil(
     });
 );
 })
-
-
 
 self.addEventListener('notificationclick', function(event) {
   console.log('Tracking: notificationclick');
