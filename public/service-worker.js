@@ -38,7 +38,7 @@ self.addEventListener('push', function(event) {
         resolve(db);
       };
     }).then(function(db){
-      new Promise(function(resolve_t, reject_t){
+      return  new Promise(function(resolve_t, reject_t){
         var req_data = db.transaction(['users']).objectStore('users').get('1');
         req_data.onsuccess = function(event){
            console.log('test');
@@ -55,14 +55,15 @@ self.addEventListener('push', function(event) {
          console.log("its blocked");
         }
       };
-    });
+    })
   });
 }
 
 event.waitUntil(
   get_data().then(function(MESSAGE_API){
     console.log(MESSAGE_API);
-    fetch(MESSAGE_API)
+    console.log('new');
+    return fetch(MESSAGE_API)})
       .then(function(response) {
         if (response.status !== 200) {
           throw new Error('Invalid status code from weather API: ' +
@@ -124,8 +125,7 @@ event.waitUntil(
       .catch(function(err) {
         console.error('A Problem occured with handling the push msg', err);
         return;
-      }) 
-    })
+      })     
 )
 })
 
